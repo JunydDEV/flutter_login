@@ -22,6 +22,9 @@ class MyAppPage extends StatefulWidget {
 }
 
 class MyAppPageWidget extends State<MyAppPage> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,9 +47,9 @@ class MyAppPageWidget extends State<MyAppPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  EmailFieldWidget(),
-                  PasswordFieldWidget(),
-                  LoginButtonWidget(),
+                  EmailFieldWidget(emailController),
+                  PasswordFieldWidget(passwordController),
+                  LoginButtonWidget(emailController, passwordController),
                 ],
               ),
             ),
@@ -55,9 +58,25 @@ class MyAppPageWidget extends State<MyAppPage> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    passwordController.dispose();
+    super.dispose();
+  }
 }
 
 class LoginButtonWidget extends StatelessWidget {
+  var emailController;
+  var passwordController;
+
+  LoginButtonWidget(TextEditingController emailController,
+      TextEditingController passwordController) {
+    this.emailController = emailController;
+    this.passwordController = passwordController;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -70,7 +89,19 @@ class LoginButtonWidget extends StatelessWidget {
             "LOGIN",
             style: TextStyle(fontSize: 16),
           ),
-          onPressed: () {},
+          onPressed: () {
+            return showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  // Retrieve the text the user has entered by using the
+                  // TextEditingController.
+                  content: Text(
+                      emailController.text + "," + passwordController.text),
+                );
+              },
+            );
+          },
           shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(10.0),
           ),
@@ -84,6 +115,12 @@ class LoginButtonWidget extends StatelessWidget {
 }
 
 class PasswordFieldWidget extends StatelessWidget {
+  var passwordController;
+
+  PasswordFieldWidget(TextEditingController passwordController) {
+    this.passwordController = passwordController;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -91,6 +128,7 @@ class PasswordFieldWidget extends StatelessWidget {
       child: TextField(
         autofocus: false,
         obscureText: true,
+        controller: passwordController,
         keyboardType: TextInputType.visiblePassword,
         decoration: InputDecoration(
           hintText: "Enter password",
@@ -109,15 +147,23 @@ class PasswordFieldWidget extends StatelessWidget {
 }
 
 class EmailFieldWidget extends StatelessWidget {
+  var emailController;
+
+  EmailFieldWidget(TextEditingController emailController) {
+    this.emailController = emailController;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
       child: TextField(
+        controller: emailController,
         autofocus: false,
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
           hintText: "Enter email",
+          labelStyle: TextStyle(color: Colors.white),
           hintStyle: TextStyle(color: Colors.white, fontSize: 18),
           filled: true,
           fillColor: Colors.green,

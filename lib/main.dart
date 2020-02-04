@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_login/home.dart';
 
 void main() => runApp(MyApp());
 
@@ -68,8 +69,8 @@ class MyAppPageWidget extends State<MyAppPage> {
 }
 
 class LoginButtonWidget extends StatelessWidget {
-  var emailController;
-  var passwordController;
+  TextEditingController emailController;
+  TextEditingController passwordController;
 
   LoginButtonWidget(TextEditingController emailController,
       TextEditingController passwordController) {
@@ -90,17 +91,21 @@ class LoginButtonWidget extends StatelessWidget {
             style: TextStyle(fontSize: 16),
           ),
           onPressed: () {
-            return showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  // Retrieve the text the user has entered by using the
-                  // TextEditingController.
-                  content: Text(
-                      emailController.text + "," + passwordController.text),
-                );
-              },
-            );
+            if (emailController.value.text.isNotEmpty &&
+                passwordController.value.text.isNotEmpty) {
+
+              print(emailController.value.toString());
+              print(passwordController.value.toString());
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return HomeApp();
+                }),
+              );
+            } else {
+              Scaffold.of(context).showSnackBar(
+                  SnackBar(content: Text("Please fill all the fields")));
+            }
           },
           shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(10.0),

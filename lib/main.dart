@@ -91,21 +91,7 @@ class LoginButtonWidget extends StatelessWidget {
             style: TextStyle(fontSize: 16),
           ),
           onPressed: () {
-            if (emailController.value.text.isNotEmpty &&
-                passwordController.value.text.isNotEmpty) {
-
-              print(emailController.value.toString());
-              print(passwordController.value.toString());
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return HomeApp();
-                }),
-              );
-            } else {
-              Scaffold.of(context).showSnackBar(
-                  SnackBar(content: Text("Please fill all the fields")));
-            }
+            gotoHomeScreen(context);
           },
           shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(10.0),
@@ -116,6 +102,24 @@ class LoginButtonWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void gotoHomeScreen(BuildContext context) {
+    if (emailController.value.text.isNotEmpty &&
+        passwordController.value.text.isNotEmpty) {
+
+      print(emailController.value.toString());
+      print(passwordController.value.toString());
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) {
+          return HomeApp();
+        }),
+      );
+    } else {
+      Scaffold.of(context).showSnackBar(
+          SnackBar(content: Text("Please fill all the fields")));
+    }
   }
 }
 
